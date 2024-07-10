@@ -3,29 +3,17 @@ version: '3.9'
 services:
   db:
     image: mysql:8
-    volumes:
-      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_DATABASE: universidad
       MYSQL_USER: myuser
       MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
-
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
+      MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    environment:
-      - DB_HOST=db
-      - DB_NAME=universidad
-      - DB_USER=myuser
-      - DB_PASSWORD=password
-      - DB_ROOT_PASSWORD=password
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql_data:
+
